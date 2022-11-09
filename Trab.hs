@@ -26,4 +26,4 @@ Main (16,x) =  Main Ula ACC y SUB x
 Main (18,x) =  Main Ula ACC y NOP x 
 Main (20,x) =  Main Ula ACC HLT
 
-Ula :: Int -> Command x -> Int -> [(Int,Int)]
+Ula :: [(Int,Int)] -> Command x -> Registrador y -> [(Int,Int)]

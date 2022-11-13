@@ -1,15 +1,17 @@
 
 data Command x = LOD x | STO x | ADD x | SUB x | JMP x | JMZ x| CPE x| NOP x| HTL x deriving Show
-data Registrador y = ACC y | PC y | EQZ y | RDM y | REM y 
+data Registrador y = ACC y | PC y | EQZ y | RDM y | REM y deriving Show
 
 
-Main :: ([(Int,Int)],(Registrador y,Int) -> ([(Int,Int)],(Registrador y,Int))
-Main ([(2,x)]),(ACC,z)) =  (ACC,h) | h <- snd (x,_) --LOD
-Main ([(4,x)]),(ACC,z)) =  (x,h) | h <- snd (ACC,_) --STO
-Main ([(6,x)]),(y,z)) =  Main Ula ACC y JMP x 
-Main ([(8,x)]),(y,z)) =  Main Ula ACC y JMZ x 
-Main ([(10,x)]),(y,z)) =  Main Ula ACC y CPE x 
-Main ([(14,x)]),(ACC,z)) =  (ACC,z+h) | h <- snd (x,_)
-Main ([(16,x)]),(y,z)) =  Main Ula ACC y SUB x 
-Main ([(18,x)]),(y,z)) =  Main Ula ACC y NOP x 
-Main ([(20,x)]),(y,z)) =  Main Ula ACC HLT
+cpu :: ([(Int,Int)],(Registrador y,Int)) -> ((Registrador y,Int))
+cpu ([(2,x)],(ACC y,z)) =  [(ACC y,h) | h <- snd (x,_)] --LOD
+cpu ([(4,x)],(ACC y,z)) =  [(x,h) | h <- snd (ACC,_) ]--STO
+cpu ([(6,x)],(ACC y,z)) =  Main ([(snd(x,_),snd(x,_))] (ACC,z)) --JMP
+cpu ([(8,x)],(ACC y,z)) =  Main Ula ACC y JMZ x --JMZ
+cpu ([(10,x)],(ACC y,z)) | z == snd(x,_) = (ACC y, 0) --CPE                   
+                         | otherwise = (ACC y,1)  
+cpu ([(14,x)],(ACC y,z)) =  [(ACC y,z+h) | h <- snd (x,_)] --ADD
+cpu ([(16,x)],(ACC y,z)) =  [(ACC y,z-h) | h <- snd (x,_)] --SUB
+cpu ([(18,x)],(ACC y,z)) =  (ACC y,0) --NOP
+cpu ([(20,x)],(ACC y,z)) =  Main Ula ACC HLT
+

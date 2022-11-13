@@ -4,8 +4,8 @@ data Registrador y = ACC y | PC y | EQZ y | RDM y | REM y
 
 
 Main :: ([(Int,Int)],(Registrador y,Int) -> ([(Int,Int)],(Registrador y,Int))
-Main ([(2,x)]),(y,z)) =  Main Ula ACC y LOD x
-Main ([(4,x)]),(y,z)) =  Main Ula ACC y STO x 
+Main ([(2,x)]),(ACC,z)) =  (ACC,h) | h <- snd (x,_) --LOD
+Main ([(4,x)]),(ACC,z)) =  (x,h) | h <- snd (ACC,_) --STO
 Main ([(6,x)]),(y,z)) =  Main Ula ACC y JMP x 
 Main ([(8,x)]),(y,z)) =  Main Ula ACC y JMZ x 
 Main ([(10,x)]),(y,z)) =  Main Ula ACC y CPE x 

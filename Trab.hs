@@ -3,7 +3,7 @@ data Registrador y = ACC y | PC y  deriving Show
 
 starter :: ([(Int,Int)],[(Registrador y,Int)]) -> ([(Int,Int)],[(Registrador y,Int)])
 starter (x,[(ACC y,z),(PC a, b)]) | b =< -1 = sum (0,1)
-                                  | otherwise = starter (x, [(ACC y,z), (PC a, b)]) | (find(==(b,_)) x) <- fst (cpu (find(==(b,_)) x), ([(ACC y,z),(PC a, b)]))
+                                  | otherwise = starter (x, [(ACC y,z), (PC a, b)]) | (x !! b) <- fst (cpu (x !! b), ([(ACC y,z),(PC a, b)]))
                      --             | otherwise = ((takeWhile == b) x  cpu((i,k),[(ACC y,z),(PC a, b)]) | (i,k) <- (takeWhile == b) x)
 
 

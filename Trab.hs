@@ -28,7 +28,7 @@ ula :: ((Command w),[Registrador y]) -> ((Int,Int),[Registrador y]) --arrumar sa
 ula ((LOD w),[(ACC y),(PC z),(VAL v)]) = ((2,w), [(ACC v), (PC (z+1)), (VAL v)]) --LOD
 ula ((STO w),[(ACC y),(PC z),(VAL v)]) =  ((w,y), [(ACC y), (PC (z+1)), (VAL v)])  --STO
 ula ((JMP w),[(ACC y),(PC z),(VAL v)]) =  ((6,w),[(ACC y),(PC w), (VAL v)]) --JMP
-ula ((JMZ w),[(ACC y),(PC z),(VAL v)]) | z == 0 = ((8,w),[(ACC y),(PC w), (VAL v)]) --JMZ
+ula ((JMZ w),[(ACC y),(PC z),(VAL v)]) | y == 0 = ((8,w),[(ACC y),(PC w), (VAL v)]) --JMZ
                                        | otherwise = ula ((NOP),[(ACC y),(PC z),(VAL v)])
 ula ((CPE w),[(ACC y),(PC z),(VAL v)]) | y == v = ((10,w), [(ACC 0), (PC (z+1)), (VAL v)]) --CPE
                                        | otherwise = ((10,w), [(ACC 1), (PC (z+1)), (VAL v)])

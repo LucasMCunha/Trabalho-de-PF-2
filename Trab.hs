@@ -1,5 +1,5 @@
-data Command w = LOD w | STO w | ADD w | SUB w | JMP w | JMZ w | CPE w | NOP w | HTL w deriving Show
-data Registrador y = ACC y | PC y  deriving Show
+data Command w = LOD Int | STO Int | ADD Int | SUB Int | JMP Int | JMZ Int | CPE Int | NOP | HTL deriving Show
+data Registrador y = ACC Int | PC Int  deriving Show
 
 starter :: ([(Int,Int)],[Registrador y]) -> ([(Int,Int)],[Registrador y])
 starter (x,[(ACC y),(PC z)]) | z <= -1 = sum (0,1)

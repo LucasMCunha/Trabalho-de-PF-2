@@ -1,10 +1,10 @@
 data Command w = LOD Int | STO Int | ADD Int | SUB Int | JMP Int | JMZ Int | CPE Int | NOP | HTL deriving Show
-data Registrador y = ACC Int | PC Int  deriving Show
+data Registrador y = ACC Int | PC Int | VAL Int  deriving Show
 
 starter :: ([(Int,Int)],[Registrador y]) -> ([(Int,Int)],[Registrador y])
-starter (x,[(ACC y),(PC z)]) | z <= -1 = sum (0,1)
-                             | otherwise = starter ((replaceNth z h x), regs)
-						 where (h, regs) = cpu ((x !! z), [(ACC y), (PC z)])
+starter (x,[(ACC y),(PC z),(VAL v)]) | z <= -1 = sum (0,1)
+                                     | otherwise = starter ((replaceNth z h x), regs)
+						 where (h, regs) = cpu ((x !! z), [(ACC y), (PC z), (VAL (snd(x !! snd (x !! z)))])
 
 replaceNth :: Int -> a -> [a] -> [a]
 replaceNth _ _ [] = []
@@ -13,29 +13,29 @@ replaceNth n newVal (x:xs)
 	| otherwise = x:replaceNth (n-1) newVal xs
 
 cpu :: ((Int,Int),[Registrador y]) -> ((Int,Int),[Registrador y])
-cpu ((2,a),[(ACC y),(PC z)]) = ula ((LOD a),[(ACC y),(PC z)])
-cpu ((4,a),[(ACC y),(PC z)]) = ula ((STO a),[(ACC y),(PC z)])
-cpu ((6,a),[(ACC y),(PC z)]) = ula ((JMP a),[(ACC y),(PC z)])
-cpu ((8,a),[(ACC y),(PC z)]) = ula ((JMZ a),[(ACC y),(PC z)])
-cpu ((10,a),[(ACC y),(PC z)]) = ula ((CPE a),[(ACC y),(PC z)])
-cpu ((14,a),[(ACC y),(PC z)]) = ula ((ADD a),[(ACC y),(PC z)])
-cpu ((16,a),[(ACC y),(PC z)]) = ula ((SUB a),[(ACC y),(PC z)])
-cpu ((18,a),[(ACC y),(PC z)]) = ula ((NOP a),[(ACC y),(PC z)])
-cpu ((20,a),[(ACC y),(PC z)]) = ula ((HTL a),[(ACC y),(PC z)])
+cpu ((2,a),[(ACC y),(PC z),(VAL v)]) = ula ((LOD a),[(ACC y),(PC z),(VAL v)])
+cpu ((4,a),[(ACC y),(PC z),(VAL v)]) = ula ((STO a),[(ACC y),(PC z),(VAL v)])
+cpu ((6,a),[(ACC y),(PC z),(VAL v)]) = ula ((JMP a),[(ACC y),(PC z),(VAL v)])
+cpu ((8,a),[(ACC y),(PC z),(VAL v)]) = ula ((JMZ a),[(ACC y),(PC z),(VAL v)])
+cpu ((10,a),[(ACC y),(PC z),(VAL v)]) = ula ((CPE a),[(ACC y),(PC z),(VAL v)])
+cpu ((14,a),[(ACC y),(PC z),(VAL v)]) = ula ((ADD a),[(ACC y),(PC z),(VAL v)])
+cpu ((16,a),[(ACC y),(PC z),(VAL v)]) = ula ((SUB a),[(ACC y),(PC z),(VAL v)])
+cpu ((18,a),[(ACC y),(PC z),(VAL v)]) = ula ((NOP a),[(ACC y),(PC z),(VAL v)])
+cpu ((20,a),[(ACC y),(PC z),(VAL v)]) = ula ((HTL a),[(ACC y),(PC z),(VAL v)])
 
 
 ula :: ((Command w),[Registrador y]) -> ((Int,Int),[Registrador y]) --arrumar saida da ula para coincidir com a saida do cpu
-ula ((LOD w),[(ACC y),(PC z)]) =  [(ACC h) | h <- snd (w,_)] --LOD
-ula ((STO w),[(ACC y),(PC z)]) =  [(w,h) | h <- (ACC _) ]--STO
-ula ((JMP w),[(ACC y),(PC z)])) =  (PC w) --JMP
-ula ((JMZ w),[(ACC y),(PC z)]) | z == 0 = (PC w) --JMZ
-                               | otherwise = NOP
-ula ((CPE w),[(ACC y),(PC z)]) | y == snd(w,_) = (ACC 0) --CPE
-                               | otherwise = (ACC 1)
-ula ((ADD w),[(ACC y),(PC z)]) =  [(ACC y+h) | h <- snd (w,_)] --ADD
-ula ((SUB w),[(ACC y),(PC z)]) =  [(ACC y-h) | h <- snd (w,_)] --SUB
-ula ((NOP w),[(ACC y),(PC z)]) =  (ACC 0) --NOP
-ula ((HTL w),[(ACC y),(PC z)]) =  (PC -1) --HTL
+ula ((LOD w),[(ACC y),(PC z),(VAL v)]) =  [(ACC h) | h <- v] --LOD
+ula ((STO w),[(ACC y),(PC z),(VAL v)]) =  [(w,h) | h <- (ACC _) ]--STO
+ula ((JMP w),[(ACC y),(PC z),(VAL v)])) =  (PC w) --JMP
+ula ((JMZ w),[(ACC y),(PC z),(VAL v)]) | z == 0 = (PC w) --JMZ
+                                       | otherwise = NOP
+ula ((CPE w),[(ACC y),(PC z),(VAL v)]) | y == v = (ACC 0) --CPE
+                                       | otherwise = (ACC 1)
+ula ((ADD w),[(ACC y),(PC z),(VAL v)]) =  [(ACC y+h) | h <- v] --ADD
+ula ((SUB w),[(ACC y),(PC z),(VAL v)]) =  [(ACC y-h) | h <- v] --SUB
+ula ((NOP w),[(ACC y),(PC z),(VAL v)]) =  (ACC 0) --NOP
+ula ((HTL w),[(ACC y),(PC z),(VAL v)]) =  (PC -1) --HTL
 
 --cpu :: ([(Int,Int)],[(Registrador y,Int)]) -> ([(Int,Int)],[(Registrador y,Int)])
 --cpu ([(2,x)],(ACC y,z)) =  [(ACC y,h) | h <- snd (x,_)] --LOD
